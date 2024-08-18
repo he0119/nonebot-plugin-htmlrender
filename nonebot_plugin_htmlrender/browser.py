@@ -48,12 +48,20 @@ async def launch_browser(**kwargs) -> Browser:
         kwargs["proxy"] = {
             "server": config.htmlrender_proxy_host,
         }
+
+    server_url = config.htmlrender_remote_server_url
     if config.htmlrender_browser == "firefox":
         logger.info("使用 firefox 启动")
+        if server_url:
+            logger.info(f"使用远程服务 {server_url}")
+            return await _playwright.firefox.connect(server_url, **kwargs)
         return await _playwright.firefox.launch(**kwargs)
 
     # 默认使用 chromium
     logger.info("使用 chromium 启动")
+    if server_url:
+        logger.info(f"使用远程服务 {server_url}")
+        return await _playwright.chromium.connect(server_url, **kwargs)
     return await _playwright.chromium.launch(**kwargs)
 
 
