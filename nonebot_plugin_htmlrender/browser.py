@@ -33,6 +33,8 @@ async def init(**kwargs) -> Browser:
     try:
         _browser = await launch_browser(**kwargs)
     except Error:
+        if config.htmlrender_remote_server_url:
+            raise
         await install_browser()
         _browser = await launch_browser(**kwargs)
     return _browser
